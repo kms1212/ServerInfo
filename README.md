@@ -1,2 +1,4 @@
 # ServerInfo
- Papermc plugin which sends server information(CPU usage, RAM usage, Errors, Exceptions, etc.) to MySQL Server
+ Papermc plugin which sends server information(CPU usage, RAM usage~, Errors, Exceptions~, etc.) to MySQL Server
+
+Built with Windows/IntelliJ IDEA.
