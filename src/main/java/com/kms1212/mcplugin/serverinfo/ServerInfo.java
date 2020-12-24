@@ -36,10 +36,6 @@ public final class ServerInfo extends JavaPlugin {
         return conn;
     }
 
-    public PreparedStatement getStmt() {
-        return stmt;
-    }
-
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -95,8 +91,7 @@ public final class ServerInfo extends JavaPlugin {
         }
 
         getData = new GetData(this);
-
-        task = getData.runTaskTimerAsynchronously(this, 0, getConfig().getInt("interval.unitInTick"));
+        task = getData.runTaskTimer(this, 0, getConfig().getInt("interval.unitInTick"));
     }
 
     @Override

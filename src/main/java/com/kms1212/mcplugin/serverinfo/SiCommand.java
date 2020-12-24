@@ -93,8 +93,6 @@ public class SiCommand implements CommandExecutor, TabCompleter {
                             if (isArgValid) {
                                 break;
                             }
-                        } else {
-                            targetList.remove(i);
                         }
                     }
 
@@ -116,8 +114,6 @@ public class SiCommand implements CommandExecutor, TabCompleter {
                             if (isArgValid) {
                                 break;
                             }
-                        } else {
-                            targetList.remove(i);
                         }
                     }
 

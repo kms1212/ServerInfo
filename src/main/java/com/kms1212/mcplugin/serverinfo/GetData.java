@@ -29,7 +29,6 @@ public class GetData extends BukkitRunnable {
         isPaused = false;
         this.plugin = (ServerInfo)plugin;
         conn = this.plugin.getConn();
-        stmt = this.plugin.getStmt();
         this.logger = plugin.getLogger();
         osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
     }
