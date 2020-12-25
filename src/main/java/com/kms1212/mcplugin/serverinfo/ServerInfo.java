@@ -7,7 +7,6 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.defaults.BukkitCommand;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -22,14 +21,9 @@ public final class ServerInfo extends JavaPlugin {
     private String host, port, database, username, password, url;
     private BukkitTask task;
     private GetData getData;
-    private String tableName;
 
     public GetData getTask() {
         return getData;
-    }
-
-    public String getTableName() {
-        return tableName;
     }
 
     public Connection getConn() {
@@ -51,7 +45,6 @@ public final class ServerInfo extends JavaPlugin {
         database = getConfig().getString("sql.database");
         username = getConfig().getString("sql.username");
         password = getConfig().getString("sql.password");
-        tableName = getConfig().getString("sql.table");
 
         url = "jdbc:mysql://" + host + ":" + port + "/" + database;
 
@@ -84,10 +77,7 @@ public final class ServerInfo extends JavaPlugin {
         logger.info(ChatColor.WHITE + "this >> " + url);
 
         try {
-            stmt = conn.prepareStatement(String.format(
-                    "CREATE TABLE IF NOT EXISTS %s ( DataIndex INT(10) NOT NULL, CPUUsage INT(3), RAMUsage INT(10), " +
-                            "ErrorMessage TEXT(65535), ExceptionMessage TEXT(65535), PRIMARY KEY (DataIndex));",
-                    tableName));
+            stmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS ServerInfo ( DataIndex INT(10) NOT NULL, CPUUsage INT(3), RAMUsage INT(10), ErrorMessage TEXT(65535), ExceptionMessage TEXT(65535), PRIMARY KEY (DataIndex));");
             stmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,16 +86,21 @@ public final class ServerInfo extends JavaPlugin {
 
         getData = new GetData(this);
 
-        task = getData.runTaskTimerAsynchronously(this, 0, getConfig().getInt("interval.unitInTick"));
+        task = getData.runTaskTimer(this, 0, 20);
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
         try {
+            stmt = conn.prepareStatement("DROP TABLE ServerInfo;");
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
             if (conn != null && !conn.isClosed()) {
-                stmt = conn.prepareStatement(String.format("DROP TABLE %s;", tableName));
-                stmt.executeUpdate();
                 task.cancel();
                 conn.close();
             }

@@ -1,5 +1,5 @@
 name: ServerInfo
-version: 2.0-RELEASE-beta
+version: 1.0
 main: com.kms1212.mcplugin.serverinfo.ServerInfo
 api-version: 1.16
 load: STARTUP
