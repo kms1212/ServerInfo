@@ -18,9 +18,19 @@ public final class ServerInfo extends JavaPlugin {
     private Logger logger;
     private Connection conn;
     private PreparedStatement stmt;
-    private String host, port, database, username, password, url;
+    private String host;
+    private String port;
+    private String database;
+    private String username;
+    private String password;
+    private String url;
+    private String table;
     private BukkitTask task;
     private GetData getData;
+
+    public String getTable() {
+        return table;
+    }
 
     public GetData getTask() {
         return getData;
@@ -45,6 +55,7 @@ public final class ServerInfo extends JavaPlugin {
         database = getConfig().getString("sql.database");
         username = getConfig().getString("sql.username");
         password = getConfig().getString("sql.password");
+        table = getConfig().getString("sql.table");
 
         url = "jdbc:mysql://" + host + ":" + port + "/" + database;
 
@@ -77,7 +88,9 @@ public final class ServerInfo extends JavaPlugin {
         logger.info(ChatColor.WHITE + "this >> " + url);
 
         try {
-            stmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS ServerInfo ( DataIndex INT(10) NOT NULL, CPUUsage INT(3), RAMUsage INT(10), ErrorMessage TEXT(65535), ExceptionMessage TEXT(65535), PRIMARY KEY (DataIndex));");
+            stmt = conn.prepareStatement("DROP TABLE IF EXISTS " + table +";");
+            stmt.executeUpdate();
+            stmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + table +" ( DataIndex INT(10) NOT NULL, CPUUsage INT(3), RAMUsage INT(10), ErrorMessage TEXT(65535), ExceptionMessage TEXT(65535), PRIMARY KEY (DataIndex));");
             stmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,7 +106,7 @@ public final class ServerInfo extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         try {
-            stmt = conn.prepareStatement("DROP TABLE ServerInfo;");
+            stmt = conn.prepareStatement("DROP TABLE IF EXISTS " + table +";");
             stmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
