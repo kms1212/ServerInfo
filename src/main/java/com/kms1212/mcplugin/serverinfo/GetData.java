@@ -47,7 +47,7 @@ public class GetData extends BukkitRunnable {
             int index = queryRow();
 
             try {
-                stmt = conn.prepareStatement("INSERT INTO ServerInfo VALUE (" + String.format("%d, %d, %d, \"\", \"\"", index, cpuUsage, usedMemory) + ");");
+                stmt = conn.prepareStatement("INSERT INTO " + plugin.getTable() +" VALUE (" + String.format("%d, %d, %d, \"\", \"\"", index, cpuUsage, usedMemory) + ");");
                 stmt.executeUpdate();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -55,7 +55,7 @@ public class GetData extends BukkitRunnable {
 
             if (index >= plugin.getConfig().getInt("datasize")) {
                 try {
-                    stmt = conn.prepareStatement("DELETE FROM ServerInfo WHERE DataIndex=" +
+                    stmt = conn.prepareStatement("DELETE FROM " + plugin.getTable() +" WHERE DataIndex=" +
                             String.format("%d", (index - plugin.getConfig().getInt("datasize"))) + ";");
                     stmt.executeUpdate();
                 } catch (Exception e) {
@@ -68,7 +68,7 @@ public class GetData extends BukkitRunnable {
     private int queryRow() {
         int ret = 0;
         try {
-            stmt = conn.prepareStatement("SELECT DataIndex FROM ServerInfo");
+            stmt = conn.prepareStatement("SELECT DataIndex FROM " + plugin.getTable() +";");
             ResultSet res = stmt.executeQuery();
             res.last();
             ret = res.getInt(1) + 1;
