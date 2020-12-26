@@ -34,4 +34,4 @@ sql:
 
 # Project
 This repository is under RULA Online Open Source Projects
-![RulaOnlineOpenSourceProjectsImage](https://sudo.kro.kr/assets/images/OpenSourceProjectTitle.png)
+<img src="https://sudo.kro.kr/assets/images/OpenSourceProjectTitle.png"  width="900" height="300">
