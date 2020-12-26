@@ -33,5 +33,5 @@ sql:
     - [Value] : Node value to set. If this value is not set, the plugin will show the values from node.
 
 # Project
-This repository is under RULA Online Open Source Projects
+**This repository is under RULA Online Open Source Projects**
 <img src="/OpenSourceProjectTitle.png"  width="900" height="300">
