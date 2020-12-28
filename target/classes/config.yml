@@ -2,17 +2,8 @@ sql:
   host: 127.0.0.1
   port: 3306
   database: minecraft
-  username: sample
-  password: sample
+  username: username
+  password: password
   table: ServerInfo
-  datasize: 20
 
-alert:
-  ramUsageHigh: 4096
-  cpuUsageHigh: 80
-
-interval:
-  unitInTick: 20
-  alert: 1
-  default: 5
-
+datasize: 20
