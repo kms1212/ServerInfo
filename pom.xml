@@ -6,7 +6,7 @@
 
     <groupId>com.kms1212.mcplugin</groupId>
     <artifactId>ServerInfo</artifactId>
-    <version>2.0-RELEASE-beta</version>
+    <version>2.1-RELEASE-beta</version>
     <packaging>jar</packaging>
 
     <name>ServerInfo</name>

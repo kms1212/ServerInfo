@@ -42,6 +42,8 @@ public final class ServerInfo extends JavaPlugin {
         logger = getLogger();
 
         saveDefaultConfig();
+        reloadConfig();
+
         host = getConfig().getString("sql.host");
         port = getConfig().getString("sql.port");
         database = getConfig().getString("sql.database");

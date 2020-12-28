@@ -63,7 +63,7 @@ public class GetData extends BukkitRunnable {
                     rs.first();
                     int rowCount = rs.getInt("COUNT(*)");
 
-                    if (rowCount > plugin.getConfig().getInt("datasize")) {
+                    if (rowCount > plugin.getConfig().getInt("sql.datasize")) {
                         stmt = conn.prepareStatement(String.format("DELETE FROM %s LIMIT %d;", plugin.getTableName(), 1));
                         stmt.executeUpdate();
                     }

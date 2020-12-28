@@ -107,7 +107,7 @@ public class SiCommand implements CommandExecutor, TabCompleter {
                         plugin.saveConfig();
                     }
                     return isArgValid;
-                } else {
+                } else if (args.length == 2) {
                     for (int i = 0; i < targetList.size(); i++) {
                         if (targetList.get(i).contains(".")) {
                             isArgValid = args[1].equals(targetList.get(i));
