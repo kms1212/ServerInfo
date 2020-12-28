@@ -7,6 +7,7 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -18,30 +19,21 @@ public final class ServerInfo extends JavaPlugin {
     private Logger logger;
     private Connection conn;
     private PreparedStatement stmt;
-    private String host;
-    private String port;
-    private String database;
-    private String username;
-    private String password;
-    private String url;
-    private String table;
+    private String host, port, database, username, password, url;
     private BukkitTask task;
     private GetData getData;
-
-    public String getTable() {
-        return table;
-    }
+    private String tableName;
 
     public GetData getTask() {
         return getData;
     }
 
-    public Connection getConn() {
-        return conn;
+    public String getTableName() {
+        return tableName;
     }
 
-    public PreparedStatement getStmt() {
-        return stmt;
+    public Connection getConn() {
+        return conn;
     }
 
     @Override
@@ -50,12 +42,14 @@ public final class ServerInfo extends JavaPlugin {
         logger = getLogger();
 
         saveDefaultConfig();
+        reloadConfig();
+
         host = getConfig().getString("sql.host");
         port = getConfig().getString("sql.port");
         database = getConfig().getString("sql.database");
         username = getConfig().getString("sql.username");
         password = getConfig().getString("sql.password");
-        table = getConfig().getString("sql.table");
+        tableName = getConfig().getString("sql.table");
 
         url = "jdbc:mysql://" + host + ":" + port + "/" + database;
 
@@ -88,9 +82,10 @@ public final class ServerInfo extends JavaPlugin {
         logger.info(ChatColor.WHITE + "this >> " + url);
 
         try {
-            stmt = conn.prepareStatement("DROP TABLE IF EXISTS " + table +";");
-            stmt.executeUpdate();
-            stmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + table +" ( DataIndex INT(10) NOT NULL, CPUUsage INT(3), RAMUsage INT(10), ErrorMessage TEXT(65535), ExceptionMessage TEXT(65535), PRIMARY KEY (DataIndex));");
+            stmt = conn.prepareStatement(String.format(
+                    "CREATE TABLE IF NOT EXISTS %s ( DataIndex INT(10) NOT NULL, CPUUsage INT(3), RAMUsage INT(10), " +
+                            "ErrorMessage TEXT(65535), ExceptionMessage TEXT(65535), PRIMARY KEY (DataIndex));",
+                    tableName));
             stmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,22 +93,16 @@ public final class ServerInfo extends JavaPlugin {
         }
 
         getData = new GetData(this);
-
-        task = getData.runTaskTimer(this, 0, 20);
+        task = getData.runTaskTimer(this, 0, getConfig().getInt("interval.unitInTick"));
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
         try {
-            stmt = conn.prepareStatement("DROP TABLE IF EXISTS " + table +";");
-            stmt.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
             if (conn != null && !conn.isClosed()) {
+                stmt = conn.prepareStatement(String.format("DROP TABLE %s;", tableName));
+                stmt.executeUpdate();
                 task.cancel();
                 conn.close();
             }
